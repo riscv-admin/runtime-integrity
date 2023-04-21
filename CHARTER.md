@@ -1,18 +1,49 @@
 # Runtime Integrity SIG Charter
+The goal of this SIG is to discuss strategy and gaps in ISA and non-ISA
+mechanisms for program safety and execution integrity for software running on
+RISC-V platforms. Over the past couple of years, RISC-V has seen significant
+adoption in embedded usages (including security-processor usages). Looking
+ahead there are a significant number of community members breaking ground for
+high performance computing targeting server and data-center workloads. As the
+RISC-V ecosystem and software evolves, new security requirements are appearing.
+To address these security concerns, and meet the overarching goal of program
+safety, the Runtime Integrity SIG expects to operate in the following areas: 
 
-For the past couple of years the RISC-V community has used the TEE TG as a vehicle for exploring security mechanisms and ideas, and working towards creating ISA specifications for improving the security capabilities of RISC-V. From ePMP to IOPMP, SMPU, M-mode isolation, CFI and the IOMMU (which was also first proposed within the TEE TG), we had very productive discussions and the work we started there is still ongoing. Within the new organization the Runtime Integrity SIG aims to play a similar role, this time more focused on ISA specifications and specific mechanisms than whole frameworks, and with a better structure with multiple TGs under the SIG for better coordination and efficiency.
+- Mechanisms for TCB reduction for existing workloads
+Existing use cases have untrusted 3rd party software components running with
+high privilege and need mechanisms to de-privilege such 3rd party software
+without needing a significant refactor of the software. Thus mechanisms for
+reducing trusted computing base (TCB) are required. One such usage is to
+mutually isolate software components at all privilege levels using domain
+isolation mechanisms.
 
-The idea is to explore security mechanisms that will allow us to provide strong security guarantees, under well defined conditions, and let vendors and users pick the combination of mechanisms/guarantees that suits their needs. Right now RISC-V has basically three ratified mechanisms for providing memory isolation (PMP/ePMP and the first and second stage of translation of virtual memory), everything else is a work in progress, we have a long way to go in order to cover other possible threat models and different system configurations.
+- Preventing classes of exploit vectors
+A large number of workloads for general high performance computing are highly
+multithreaded and written in unsafe languages. This has resulted in memory
+safety (corruption) issues which can be exploited by attackers to perform
+malicious execution (via data-flow/control-flow subversion), information
+disclosures (like heartbleed) or denial of service issues. Hence, the SIG will
+address mechanisms to enforce control flow integrity of the program to prevent
+remote code execution attacks or memory safety technologies to prevent /
+mitigate corruption issues altogether.
 
- * PMP/ePMP is great but it has its limitations, it&apos;s there to protect a small and mostly static set of (physical) memory regions, configured at boot time, rather than allow us to dynamically manage a large set of regions at runtime. Instead of overloading ePMP we need a new mechanism and there are already discussions on AP-TEE TG and the IOMMU TG on the subject. The idea is to have a structure similar to a page table, managed by M-mode and shared with the IOMMU, that will allow us to dynamically add and remove regions/pages to the set of secure/trusted regions, accessible only by the TEEs and their secure monitor/hypervisor. In the future we may decide to extend this mechanism to also support assignment of memory regions to specific security domains or guests / privilege modes etc. It's a very interesting area to explore.
- * The forward and backward edge CFI proposals that the CFI TG is working on are evolving and will hopefully get ratified next year, however there may be other CFI techniques to consider, or future enhancements to those proposals.
- * M-mode isolation is gaining attention again, various use cases have come up that require running code on M-mode, alongside an isolated/protected trusted firmware. Same goes for SMPU which is also gaining attention as it continues to evolve.
- * There are also other areas that came up during our discussions, a few examples:
-   * Anti-debugging
-   * Memory tagging (on top of pointer masking)
-   * Protection keys
-   * Anomaly detection / gadget detection
-   * Information flow tracking
-   * Capability-based integrity (as in CHERI)
+- Scalable Isolation mechanisms for evolving workloads
+Software is constantly evolving and in some cases faster than hardware / CPU
+ISA can respond to it.  One particular vehicle driving such evolution is large
+address space available in 64 bit operating environments. As an example sv48
+(and equivalent on other architectures) paging provides 128TiB of address space
+in a process. One particular software model exploiting this large address space
+is FaaS (or functions on the edge) model. Such evolving workloads require
+finer-grain isolation mechanisms than available today in the RISC-V ISA.
 
-Now that we have Confidential Computing SIG handle Secure Boot, attestation, software architecture and other non-ISA items, the SoC HC handle IOMMU and IOPMP, and the Microarchitectural Side Channel Attack SIG, the Runtime Integrity SIG is the last piece of the puzzle.
+- Platform mechanisms to support program safety
+Certain use cases require software to be tamper resistant and analysis proof to
+maintain their runtime integrity. Software can be analyzed or tampered with
+using debug mechanisms provided by hardware, devices (peripherals) operating
+system and debugging tools. ISA or software mechanisms are required using which
+software can be made tamper proof and provides certain guarantees against
+analysis.
+
+The SIG will work within the larger Security HC, Trusted Computing SIG TGs and
+Priv IC to pursue the common required ISA capabilities, and co-ordinate with
+Priv software and tools TGs to evaluate impact on programming tools.
