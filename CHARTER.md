@@ -18,6 +18,7 @@ mutually isolate software components at all privilege levels using domain
 isolation mechanisms.
 
 - Preventing classes of exploit vectors
+
 A large number of workloads for general high performance computing are highly
 multithreaded and written in unsafe languages. This has resulted in memory
 safety (corruption) issues which can be exploited by attackers to perform
@@ -28,6 +29,7 @@ remote code execution attacks or memory safety technologies to prevent /
 mitigate corruption issues altogether.
 
 - Scalable Isolation mechanisms for evolving workloads
+
 Software is constantly evolving and in some cases faster than hardware / CPU
 ISA can respond to it.  One particular vehicle driving such evolution is large
 address space available in 64 bit operating environments. As an example sv48
@@ -37,6 +39,7 @@ is FaaS (or functions on the edge) model. Such evolving workloads require
 finer-grain isolation mechanisms than available today in the RISC-V ISA.
 
 - Platform mechanisms to support program safety
+
 Certain use cases require software to be tamper resistant and analysis proof to
 maintain their runtime integrity. Software can be analyzed or tampered with
 using debug mechanisms provided by hardware, devices (peripherals) operating
